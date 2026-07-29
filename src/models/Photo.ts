@@ -2,7 +2,7 @@ import { model, Schema, Document, Types } from "mongoose";
 
 type PhotoType = 'preview' | 'portfolio' | 'user'
 
-export interface IPhoto extends Document {
+export interface IPhotoInput {
     src: string
     position: number
     userID?: Types.ObjectId
@@ -14,11 +14,16 @@ export interface IPhoto extends Document {
     isAddedToCart?: boolean
 }
 
-const isRequired = (photo: IPhoto, type: PhotoType) => {
+interface IPhotoOutput extends IPhotoInput, Document {
+    createdAt: Date,
+    updatedAt: Date
+}
+
+const isRequired = (photo: IPhotoOutput, type: PhotoType) => {
     return photo.type === type
 }
 
-const  photoSchema = new Schema<IPhoto>(
+const  photoSchema = new Schema<IPhotoOutput>(
     {
         src: { type: String, required: true },
         position: { type: Number, required: true },
@@ -49,4 +54,4 @@ photoSchema.index({ type: 1, position: 1})
 photoSchema.index({ userID: 1 })
 photoSchema.index({ photoshootID: 1 })
 
-export const Photo = model<IPhoto>('Photo', photoSchema)
+export const Photo = model<IPhotoOutput>('Photo', photoSchema)

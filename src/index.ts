@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 
+import photoRoutes from "./routes/photoRoutes.js"
+
 dotenv.config()
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017' // edit
@@ -16,6 +18,8 @@ mongoose
 
 const app = express()
 app.use(express.json())
+
+app.use('/api/photos', photoRoutes)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log("Server is started on http://localhost:" + PORT))

@@ -1,10 +1,21 @@
 import { Router } from "express";
-import { createPhoto, getAllPhotos } from "../controllers/previewController.js";
+import { 
+    createPhoto,
+    getAllPhotos,
+    getPhotosByType,
+    getPhotoById,
+    getPhotosByUserId,
+    getPhotosByPhotoshootId
+} from "../controllers/photosController.js";
 import { fileUpload } from "../middlewares/fileUpload.js";
 
 const router = Router()
 
 router.get('/', getAllPhotos)
 router.post('/', fileUpload.single('src'), createPhoto)
+router.get('/type/:type', getPhotosByType)
+router.get('/:id', getPhotoById)
+router.get('/:userID/photos', getPhotosByUserId)
+router.get('/:userID', getPhotosByPhotoshootId)
 
 export default router

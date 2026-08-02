@@ -1,12 +1,16 @@
 import { model, Schema, Document } from "mongoose";
 
-interface IUser extends Document {
+export interface IUserInput {
     fullname: string
     login: string
     role: 'admin' | 'user'
 }
+interface IUserOutput extends IUserInput, Document {
+    createdAt: Date,
+    updatedAt: Date
+}
 
-const userSchema = new Schema<IUser>(
+const userSchema = new Schema<IUserOutput>(
     {
         fullname: { type: String, required: true },
         login: { type: String, required: true, unique: true },
@@ -17,4 +21,4 @@ const userSchema = new Schema<IUser>(
     }
 )
 
-export const User = model<IUser>('User', userSchema)
+export const User = model<IUserOutput>('User', userSchema)

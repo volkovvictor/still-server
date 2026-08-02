@@ -1,6 +1,6 @@
 import { model, Schema, Document, Types } from "mongoose";
 
-type PhotoType = 'preview' | 'portfolio' | 'user'
+export type PhotoType = 'preview' | 'portfolio' | 'user'
 
 export interface IPhotoInput {
     src: string

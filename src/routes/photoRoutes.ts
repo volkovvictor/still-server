@@ -5,7 +5,9 @@ import {
     getPhotosByType,
     getPhotoById,
     getPhotosByUserId,
-    getPhotosByPhotoshootId
+    getPhotosByPhotoshootId,
+    updatePhoto,
+    deletePhoto
 } from "../controllers/photosController.js";
 import { fileUpload } from "../middlewares/fileUpload.js";
 
@@ -17,5 +19,7 @@ router.get('/type/:type', getPhotosByType)
 router.get('/:id', getPhotoById)
 router.get('/:userID/photos', getPhotosByUserId)
 router.get('/:userID', getPhotosByPhotoshootId)
+router.put('/:id', updatePhoto)
+router.delete('/:id', deletePhoto)
 
 export default router

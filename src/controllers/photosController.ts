@@ -113,3 +113,33 @@ export const createPhoto = async (req: Request, res: Response) => {
         return res.status(400).json({ error: `Error! The data is not valid; ${err}` })
     }
 }
+
+export const updatePhoto = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+        const photo = await Photo.findByIdAndUpdate(id, 
+            { 
+                ...req.body
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        )
+
+        return res.json(photo)
+    } catch(err) {
+        return res.status(404).json({ error: `Error! Photo not found ${err}` })
+    }
+}
+
+export const deletePhoto = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+        const photo = await Photo.findByIdAndDelete(id)
+
+        return res.json(photo)
+    } catch(err) {
+        return res.status(404).json({ error: `Error! Photo not found ${err}` })
+    }
+}

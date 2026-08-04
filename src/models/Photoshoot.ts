@@ -1,17 +1,22 @@
 import { model, Schema, Document, Types } from "mongoose";
 
-interface IPhotoshoot extends Document {
+export interface IPhotoshootInput {
     previewSrc: string
     position: number
-    userID: Types.ObjectId
+    userID?: Types.ObjectId
     date: Date
 }
 
-const photoshootSchema = new Schema<IPhotoshoot>(
+interface IPhotoshootOutput extends IPhotoshootInput, Document {
+    createdAt: Date,
+    updatedAt: Date
+}
+
+const photoshootSchema = new Schema<IPhotoshootOutput>(
     {
         previewSrc: { type: String, required: true },
         position: { type: Number, required: true, min: 1 },
-        userID: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+        userID: { type: Schema.Types.ObjectId, ref: 'User' },
         date: { type: Date }
     },
     {
@@ -21,4 +26,4 @@ const photoshootSchema = new Schema<IPhotoshoot>(
 
 photoshootSchema.index({ date: -1, position: 1 });
 
-export const Photoshoot = model<IPhotoshoot>('Photoshoot', photoshootSchema)
+export const Photoshoot = model<IPhotoshootOutput>('Photoshoot', photoshootSchema)

@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 
 import photoRoutes from "./routes/photoRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
+import photoshootRoutes from "./routes/photoshootRoutes.js"
 
 dotenv.config()
 
@@ -22,6 +23,7 @@ app.use(express.json())
 
 app.use('/api/photos', photoRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/photoshoots', photoshootRoutes)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log("Server is started on http://localhost:" + PORT))

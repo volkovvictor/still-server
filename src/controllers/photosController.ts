@@ -66,11 +66,11 @@ export const getPhotosByUserId = async (req: Request, res: Response) => {
 
 export const getPhotosByPhotoshootId = async (req: Request, res: Response) => {
     try {
-        const photoshootID = req.params.userID as string // edit
+        const photoshootID = req.params.photoshootID as string // edit
         const photoshoot = await Photoshoot.findById(photoshootID)
 
         if (!photoshoot) {
-            throw new Error('User not found')
+            throw new Error('Photoshoot not found')
         }
 
         const photos = await Photo.find({ photoshootID }).sort({ position: 1 })
@@ -101,6 +101,7 @@ export const createPhoto = async (req: Request, res: Response) => {
         const data: IPhotoInput = {
             src: req.file.path,
             position: req.body.position,
+            photoPublicId: req.file.filename,
             type: req.body.type,
             ...userPhotoData,
             ...portfolioPhotoData

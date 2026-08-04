@@ -5,6 +5,7 @@ export type PhotoType = 'preview' | 'portfolio' | 'user'
 export interface IPhotoInput {
     src: string
     position: number
+    photoPublicId: string,
     userID?: Types.ObjectId
     photoshootID?: Types.ObjectId
     type: PhotoType
@@ -14,7 +15,7 @@ export interface IPhotoInput {
     isAddedToCart?: boolean
 }
 
-interface IPhotoOutput extends IPhotoInput, Document {
+export interface IPhotoOutput extends IPhotoInput, Document {
     createdAt: Date,
     updatedAt: Date
 }
@@ -33,6 +34,7 @@ const  photoSchema = new Schema<IPhotoOutput>(
         photoshootID: { type: Schema.Types.ObjectId, required: function (this) {
             return isRequired(this, 'portfolio')
         }},
+        photoPublicId: { type: String },
         type: { type: String, required: true, enum: ['preview', 'portfolio', 'user'] },
 
         isLiked: { type: Boolean, default: false, required: function(this) {

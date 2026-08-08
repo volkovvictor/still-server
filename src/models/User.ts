@@ -1,20 +1,47 @@
 import { model, Schema, Document } from "mongoose";
 
+type Role = 'admin' | 'user'
+
 export interface IUserInput {
     fullname: string
-    login: string
-    role: 'admin' | 'user'
+    email: string
+    role: Role
+    password: string
+    refreshToken: string | null
 }
-interface IUserOutput extends IUserInput, Document {
+export interface IUserOutput extends IUserInput, Document {
     createdAt: Date,
     updatedAt: Date
 }
 
 const userSchema = new Schema<IUserOutput>(
     {
-        fullname: { type: String, required: true },
-        login: { type: String, required: true, unique: true },
-        role: { type: String, required: true }
+        fullname: {
+            type: String,
+            required: true
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            lowercase: true,
+            trim: true
+        },
+        role: {
+            type: String,
+            default: 'user',
+            enum: ['user', 'admin']
+        },
+        password: {
+            type: String,
+            required: true,
+            select: false
+        },
+        refreshToken: {
+            type: String,
+            select: false,
+            default: null
+        },
     },
     {
         timestamps: true

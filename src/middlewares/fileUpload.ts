@@ -42,6 +42,8 @@ const fileFilter = (_req: any, file: Express.Multer.File, cb: multer.FileFilterC
     const allowed_types = /jpeg|jpg|png|gif|webp/
     const extname = allowed_types.test(file.originalname.toLocaleLowerCase())
     const mimetype = allowed_types.test(file.mimetype)
+
+    console.log('file', file)
     
     if (extname && mimetype) {
         cb(null, true)

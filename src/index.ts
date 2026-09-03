@@ -1,13 +1,23 @@
 import express from 'express';
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-
+import cors from 'cors'
+import { JwtPayload } from 'jsonwebtoken';
 import photoRoutes from "./routes/photoRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
 import photoshootRoutes from "./routes/photoshootRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
+import { IUserInput } from './models/User.js';
 
 dotenv.config()
+
+declare global {
+    namespace Express {
+        interface Request {
+            user?: IUserInput
+        }
+    }
+}
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017' // edit
 
@@ -21,6 +31,10 @@ mongoose
 
 const app = express()
 app.use(express.json())
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}))
 
 app.use('/api/photos', photoRoutes)
 app.use('/api/users', userRoutes)

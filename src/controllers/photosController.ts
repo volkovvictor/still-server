@@ -3,9 +3,10 @@ import { Photo } from "../models/Photo.js";
 import { User } from "../models/User.js";
 import { Photoshoot } from "../models/Photoshoot.js";
 import { IPhotoInput, PhotoType } from "../models/Photo.js";
+import { v2 as cloudinary } from "cloudinary";
 
 type userPhotoType = Pick<IPhotoInput, 'userID' | 'isLiked' | 'isPurchased' | 'isAddedToCart'>
-type portfolioPhotoType = Pick<IPhotoInput, 'photoshootID'>
+type portfolioPhotoType = Pick<IPhotoInput, 'photoshootID' | 'userID'>
 
 export const getAllPhotos = async (req: Request, res: Response) => {
     try {
@@ -19,7 +20,7 @@ export const getAllPhotos = async (req: Request, res: Response) => {
 export const getPhotosByType = async (req: Request, res: Response) => {
     try {
         const type = req.params.type as PhotoType
-        const validTypes: PhotoType[] = ['preview', 'user', 'portfolio']
+        const validTypes: PhotoType[] = ['preview', 'account', 'portfolio']
         if (!validTypes.includes(type)) {
             throw new Error("Type is not valid")
         }
@@ -83,26 +84,37 @@ export const getPhotosByPhotoshootId = async (req: Request, res: Response) => {
 
 export const createPhoto = async (req: Request, res: Response) => {
     try {
+
+        console.log('req', req.body)
         if (!req.file) {
             throw new Error("File is not correct")
         }
 
-        const userPhotoData: userPhotoType = req.body.type === 'user' ? {
+        const { width, height } = await cloudinary.api.resource(req.file.filename)
+        const size = height > width ? 2 : 1
+        console.log('width', width)
+        console.log('height', height)
+
+        const userPhotoData: userPhotoType = req.body.type === 'account' ? {
             userID: req.body.userID,
-            isLiked: req.body.isLiked,
-            isPurchased: req.body.isPurchased,
-            isAddedToCart: req.body.isAddedToCart
+            isLiked: false,
+            isPurchased: false,
+            isAddedToCart: false
         } : {}
 
         const portfolioPhotoData: portfolioPhotoType = req.body.type === 'portfolio' ? {
-            photoshootID: req.body.photoshootID
+            photoshootID: req.body.photoshootID,
+            userID: req.body?.userID
         } : {}
 
         const data: IPhotoInput = {
             src: req.file.path,
             position: req.body.position,
+            size,
             photoPublicId: req.file.filename,
             type: req.body.type,
+            width,
+            height,
             ...userPhotoData,
             ...portfolioPhotoData
         }

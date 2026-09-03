@@ -38,7 +38,6 @@ export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body as LoginUserType
         const user = await User.findOne({ email }).select('+password')
-        console.log('user', user)
 
         if (!user) {
             return res.status(400).json({ error: "Password or email is not correct" })
@@ -57,7 +56,7 @@ export const login = async (req: Request, res: Response) => {
             },
             SESSION_SECRET as string,
             {
-                expiresIn: "15m"
+                expiresIn: "3m"
             }
         )
         const refreshToken = jwt.sign(
@@ -86,5 +85,22 @@ export const login = async (req: Request, res: Response) => {
 
     } catch (err) {
         return res.status(500).json({ error: "Login Server Error " + err })
+    }
+}
+
+export const refresh = async (req: Request, res: Response) => {
+    try {
+        
+    } catch (err) {
+
+    }
+}
+
+export const authorization = async (req: Request, res: Response) => {
+    try {
+        console.log('req', req.body)
+        return res.json({ message: "OK" })
+    } catch (err) {
+        return res.status(500).json({ error: "Authorization Server Error " + err })
     }
 }

@@ -24,7 +24,7 @@ export const getPhotosByType = async (req: Request, res: Response) => {
         if (!validTypes.includes(type)) {
             throw new Error("Type is not valid")
         }
-        const photos = await Photo.find({ type }).sort({ position: 1 })
+        const photos = (await Photo.find({ type }).sort({ position: 1 }))
         return res.status(200).json(photos)
     } catch(err) {
         return res.status(404).json({ error: `Error: ${err}` })
@@ -92,8 +92,6 @@ export const createPhoto = async (req: Request, res: Response) => {
 
         const { width, height } = await cloudinary.api.resource(req.file.filename)
         const size = height > width ? 2 : 1
-        console.log('width', width)
-        console.log('height', height)
 
         const userPhotoData: userPhotoType = req.body.type === 'account' ? {
             userID: req.body.userID,
@@ -150,6 +148,10 @@ export const deletePhoto = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
         const photo = await Photo.findByIdAndDelete(id)
+
+        if (photo) {
+            await cloudinary.uploader.destroy(photo.photoPublicId)
+        }
 
         return res.json(photo)
     } catch(err) {

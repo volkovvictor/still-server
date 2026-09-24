@@ -4,7 +4,11 @@ export interface IPhotoshootInput {
     previewSrc: string
     position: number
     userID?: Types.ObjectId
-    date: Date
+    previewPhotoPublicId: string,
+    date: Date,
+    width: number,
+    height: number,
+    size: number,
 }
 
 interface IPhotoshootOutput extends IPhotoshootInput, Document {
@@ -17,7 +21,11 @@ const photoshootSchema = new Schema<IPhotoshootOutput>(
         previewSrc: { type: String, required: true },
         position: { type: Number, required: true, min: 1 },
         userID: { type: Schema.Types.ObjectId, ref: 'User' },
-        date: { type: Date }
+        date: { type: Date, required: true },
+        width: { type: Number, required: true },
+        height: { type: Number, required: true },
+        previewPhotoPublicId: { type: String },
+        size: { type: Number, default: 1 }
     },
     {
         timestamps: true

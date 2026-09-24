@@ -6,10 +6,12 @@ import {
     updatePhotoshoot
 } from "../controllers/photoshootController.js";
 
+import { fileUpload } from "../middlewares/fileUpload.js";
+
 const router = Router()
 
 router.get('/', getAllPhotoshoots)
-router.post('/', createPhotoshoot)
+router.post('/', fileUpload.single("previewSrc"), createPhotoshoot)
 router.put('/:id', updatePhotoshoot)
 router.delete('/:id', deletePhotoshoot)
 

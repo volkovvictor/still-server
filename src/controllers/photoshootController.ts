@@ -15,7 +15,24 @@ export const getAllPhotoshoots = async (req: Request, res: Response) => {
 
 export const createPhotoshoot = async (req: Request, res: Response) => {
     try {
-        const data = req.body as IPhotoshootInput
+
+        if (!req.file) {
+            throw new Error("File is not correct")
+        }
+
+        const { width, height } = await cloudinary.api.resource(req.file.filename)
+        const size = height > width ? 2 : 1
+
+        const data: IPhotoshootInput = {
+            previewSrc: req.file.path,
+            position: req.body.position,
+            date: req.body.date || new Date(),
+            previewPhotoPublicId: req.file.filename,
+            userID: req.body.userID,
+            width,
+            height,
+            size,
+        }
         const photoshoot = await Photoshoot.create(data)
 
         return res.json(photoshoot)
@@ -51,6 +68,12 @@ export const deletePhotoshoot = async (req: Request, res: Response) => {
             throw new Error("Id is undefined")
         } 
 
+        const photoshoot = await Photoshoot.findById(photoshootID)
+
+        if (!photoshoot) {
+            throw new Error("Photoshoot not found")
+        }
+
         const photosByPhotoshootId = await Photo.find({ photoshootID }) as IPhotoOutput[]
 
         for (const photo of photosByPhotoshootId) {
@@ -61,10 +84,11 @@ export const deletePhotoshoot = async (req: Request, res: Response) => {
 
         await Photo.deleteMany({ photoshootID })
 
-        const photoshoot = await Photoshoot.findByIdAndDelete(photoshootID)
+        await cloudinary.uploader.destroy(photoshoot.previewPhotoPublicId)
+        await Photoshoot.findByIdAndDelete(photoshootID)
 
         return res.json(photoshoot)
     } catch(err) {
-        return res.status(404).json({ error: `Error! Photoshoot not found ${err}` })
+        return res.status(404).json({ error: `Error! ${err}` })
     }
 }

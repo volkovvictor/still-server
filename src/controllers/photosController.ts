@@ -84,8 +84,6 @@ export const getPhotosByPhotoshootId = async (req: Request, res: Response) => {
 
 export const createPhoto = async (req: Request, res: Response) => {
     try {
-
-        console.log('req', req.body)
         if (!req.file) {
             throw new Error("File is not correct")
         }
@@ -128,12 +126,14 @@ export const createPhoto = async (req: Request, res: Response) => {
 export const updatePhoto = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
+        console.log('id', id)
+        console.log('position', req.body)
         const photo = await Photo.findByIdAndUpdate(id, 
             { 
                 ...req.body
             },
             {
-                new: true,
+                returnDocument: 'after',
                 runValidators: true
             }
         )

@@ -24,10 +24,10 @@ export const createPhotoshoot = async (req: Request, res: Response) => {
         const size = height > width ? 2 : 1
 
         const data: IPhotoshootInput = {
-            previewSrc: req.file.path,
+            src: req.file.path,
             position: req.body.position,
             date: req.body.date || new Date(),
-            previewPhotoPublicId: req.file.filename,
+            photoPublicId: req.file.filename,
             userID: req.body.userID,
             width,
             height,
@@ -84,7 +84,7 @@ export const deletePhotoshoot = async (req: Request, res: Response) => {
 
         await Photo.deleteMany({ photoshootID })
 
-        await cloudinary.uploader.destroy(photoshoot.previewPhotoPublicId)
+        await cloudinary.uploader.destroy(photoshoot.photoPublicId)
         await Photoshoot.findByIdAndDelete(photoshootID)
 
         return res.json(photoshoot)

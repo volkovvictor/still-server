@@ -1,10 +1,10 @@
 import { model, Schema, Document, Types } from "mongoose";
 
 export interface IPhotoshootInput {
-    previewSrc: string
+    src: string
     position: number
     userID?: Types.ObjectId
-    previewPhotoPublicId: string,
+    photoPublicId: string,
     date: Date,
     width: number,
     height: number,
@@ -18,13 +18,13 @@ interface IPhotoshootOutput extends IPhotoshootInput, Document {
 
 const photoshootSchema = new Schema<IPhotoshootOutput>(
     {
-        previewSrc: { type: String, required: true },
+        src: { type: String, required: true },
         position: { type: Number, required: true, min: 1 },
         userID: { type: Schema.Types.ObjectId, ref: 'User' },
         date: { type: Date, required: true },
         width: { type: Number, required: true },
         height: { type: Number, required: true },
-        previewPhotoPublicId: { type: String },
+        photoPublicId: { type: String },
         size: { type: Number, default: 1 }
     },
     {

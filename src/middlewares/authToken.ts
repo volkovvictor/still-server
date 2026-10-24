@@ -1,35 +1,23 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { IUserInput } from "../models/User.js";
+import { verifyAccessToken } from "../utils/generateTokens.js";
 
 const SESSION_SECRET = process.env.SESSION_SECRET
 
 const authToken = (req: Request, res: Response, next: NextFunction) => {
+    const header = req.headers.authorization
+
+    if (!header?.startsWith("Bearer")) return res.status(400).json({ error: "Нет токена" })
+    
+    const token = header.split(" ")[1] as string
+
     try {
-        const accessToken = req.headers['authorization']?.split(' ')[1]
-        
-        if (!accessToken) {
-            return res.status(400).json({ error: "Access token not received" })
-        }
-
-        jwt.verify(accessToken, process.env.SESSION_SECRET as string, (err, user) => {
-            
-            const expiredErr = err && err.message.includes('jwt expired')
-            const tokenErr = err && err.message.includes('invalid')
-
-            if (tokenErr) {
-                throw new Error(err.message)
-            }
-
-            if (expiredErr) {
-            }
-
-            req.user = user as IUserInput
-            next()
-
-        })
+        const payload = verifyAccessToken(token)
+        req.userID = payload.userID
+        next()
     } catch (err) {
-        return res.status(500).json({ error: err })
+        return res.status(500).json({ error: "Authorization Server Error " + err })
     }
 }
 

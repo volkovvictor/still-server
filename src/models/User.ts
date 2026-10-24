@@ -1,13 +1,13 @@
 import { model, Schema, Document } from "mongoose";
 
-type Role = 'admin' | 'user'
+export type Role = 'admin' | 'user'
 
 export interface IUserInput {
     fullname: string
     email: string
     role: Role
     password: string
-    refreshToken: string | null
+    refreshToken?: string
 }
 export interface IUserOutput extends IUserInput, Document {
     createdAt: Date,
@@ -40,7 +40,6 @@ const userSchema = new Schema<IUserOutput>(
         refreshToken: {
             type: String,
             select: false,
-            default: null
         },
     },
     {

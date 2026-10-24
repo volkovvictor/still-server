@@ -1,5 +1,5 @@
 import express from 'express';
-import mongoose from 'mongoose'
+import mongoose, { Types } from 'mongoose'
 import dotenv from 'dotenv'
 import cors from 'cors'
 import { JwtPayload } from 'jsonwebtoken';
@@ -7,14 +7,15 @@ import photoRoutes from "./routes/photoRoutes.js"
 import userRoutes from "./routes/userRoutes.js"
 import photoshootRoutes from "./routes/photoshootRoutes.js"
 import authRoutes from "./routes/authRoutes.js"
-import { IUserInput } from './models/User.js';
+import { IUserInput, Role } from './models/User.js';
+import cookieParser from 'cookie-parser';
 
 dotenv.config()
 
 declare global {
     namespace Express {
         interface Request {
-            user?: IUserInput
+            userID: Types.ObjectId
         }
     }
 }
@@ -35,6 +36,7 @@ app.use(cors({
     origin: 'http://localhost:3000',
     credentials: true
 }))
+app.use(cookieParser())
 
 app.use('/api/photos', photoRoutes)
 app.use('/api/users', userRoutes)

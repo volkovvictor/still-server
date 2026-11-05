@@ -49,7 +49,7 @@ export const register = async (req: Request, res: Response) => {
 
         await User.create(newUser)
 
-        return res.json({ message: "Пользователь успешно зарегестрирован" })
+        return res.json({ success: true })
     } catch (err) {
         return res.status(500).json({ error: "Registration Server Error " + err })
     }
@@ -90,11 +90,14 @@ export const login = async (req: Request, res: Response) => {
 
 export const refresh = async (req: Request, res: Response) => {
     const token = req.cookies.refreshToken
+
+    console.log('refreshToken', token)
+
     if (!token) return res.status(400).json({ error: "Токен не найден" })
 
     try {
         const payload = verifyRefreshToken(token)
-        const user = await User.findById(payload.userID)
+        const user = await User.findById(payload.userID).select("+refreshToken")
 
         if (!user) return res.status(404).json({ error: "Пользователь не найден" })
         if (user.refreshToken !== token) return res.status(400).json({ error: "Токен не валиден" })
@@ -106,7 +109,7 @@ export const refresh = async (req: Request, res: Response) => {
 
         res.cookie("refreshToken", refreshToken, cookieOptions)
 
-        return res.json({ accessToken })
+        return res.json({ accessToken, user })
     } catch (err) {
         return res.status(500).json({ error: "Server Error " + err })
     }
@@ -124,13 +127,14 @@ export const authorization = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
+    console.log('refreshToken', refreshToken)
     try {
         if (!refreshToken) return res.status(400).json({ error: "Нет токена" })
         
         await User.updateOne({ refreshToken }, { $unset: { refreshToken: 1 } })
         res.clearCookie("refreshToken")
 
-        return res.json({ message: "Success" }) 
+        return res.json({ success: true }) 
     } catch (err) {
         return res.status(500).json({ error: "Authorization Server Error " + err })
     }

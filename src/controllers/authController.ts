@@ -91,8 +91,6 @@ export const login = async (req: Request, res: Response) => {
 export const refresh = async (req: Request, res: Response) => {
     const token = req.cookies.refreshToken
 
-    console.log('refreshToken', token)
-
     if (!token) return res.status(400).json({ error: "Токен не найден" })
 
     try {

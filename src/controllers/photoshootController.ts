@@ -15,7 +15,7 @@ export const getAllPhotoshoots = async (req: Request, res: Response) => {
 
 export const createPhotoshoot = async (req: Request, res: Response) => {
     try {
-
+        console.log('file', req.file)
         if (!req.file) {
             throw new Error("File is not correct")
         }
@@ -33,7 +33,9 @@ export const createPhotoshoot = async (req: Request, res: Response) => {
             height,
             size,
         }
+        console.log('data', data)
         const photoshoot = await Photoshoot.create(data)
+        console.log('photoshoot', photoshoot)
 
         return res.json(photoshoot)
     } catch(err) {

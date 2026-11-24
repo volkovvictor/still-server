@@ -30,7 +30,7 @@ const isRequired = (photo: IPhotoOutput, type: PhotoType) => {
 const  photoSchema = new Schema<IPhotoOutput>(
     {
         src: { type: String, required: true },
-        position: { type: Number, required: true },
+        position: { type: Number, required: true, min: 0 },
         size: { type: Number, default: 1 },
         width: { type: Number, required: true },
         height: { type: Number, required: true },

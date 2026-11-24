@@ -6,8 +6,18 @@ import { cloudinary } from "../middlewares/fileUpload.js";
 
 export const getAllPhotoshoots = async (req: Request, res: Response) => {
     try {
-        const photoshoots = await Photoshoot.find()
+        const photoshoots = await Photoshoot.find().sort({ position: 1 })
         return res.status(200).json(photoshoots)
+    } catch(err) {
+        return res.status(500).json({ error: `Server Error; ${err}` })
+    }
+}
+
+export const getPhotoshootById = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params
+        const photoshoot = await Photoshoot.findById(id)
+        return res.status(200).json(photoshoot)
     } catch(err) {
         return res.status(500).json({ error: `Server Error; ${err}` })
     }
@@ -51,11 +61,10 @@ export const updatePhotoshoot = async (req: Request, res: Response) => {
                 ...req.body
             },
             {
-                new: true,
+                returnDocument: "after",
                 runValidators: true
             }
         )
-
         return res.json(photoshoot)
     } catch(err) {
         return res.status(404).json({ error: `Error! Photoshoot not found ${err}` })

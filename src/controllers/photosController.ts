@@ -126,8 +126,6 @@ export const createPhoto = async (req: Request, res: Response) => {
 export const updatePhoto = async (req: Request, res: Response) => {
     try {
         const { id } = req.params
-        console.log('id', id)
-        console.log('position', req.body)
         const photo = await Photo.findByIdAndUpdate(id, 
             { 
                 ...req.body

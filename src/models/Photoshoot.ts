@@ -19,7 +19,7 @@ interface IPhotoshootOutput extends IPhotoshootInput, Document {
 const photoshootSchema = new Schema<IPhotoshootOutput>(
     {
         src: { type: String, required: true },
-        position: { type: Number, required: true, min: 1 },
+        position: { type: Number, required: true, min: 0 },
         userID: { type: Schema.Types.ObjectId, ref: 'User' },
         date: { type: Date, required: true },
         width: { type: Number, required: true },

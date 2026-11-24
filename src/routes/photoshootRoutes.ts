@@ -3,7 +3,8 @@ import {
     getAllPhotoshoots,
     createPhotoshoot,
     deletePhotoshoot,
-    updatePhotoshoot
+    updatePhotoshoot,
+    getPhotoshootById
 } from "../controllers/photoshootController.js";
 
 import { fileUpload } from "../middlewares/fileUpload.js";
@@ -11,6 +12,7 @@ import { fileUpload } from "../middlewares/fileUpload.js";
 const router = Router()
 
 router.get('/', getAllPhotoshoots)
+router.get('/:id', getPhotoshootById)
 router.post('/', fileUpload.single("src"), createPhotoshoot)
 router.put('/:id', updatePhotoshoot)
 router.delete('/:id', deletePhotoshoot)
